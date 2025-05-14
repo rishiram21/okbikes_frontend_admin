@@ -100,6 +100,7 @@ const StoreMaster = () => {
         setData([...data, response.data]);
         resetForm();
         fetchStores();
+        window.location.reload();
       })
       .catch((error) => console.error("Error adding store data", error));
   };
@@ -114,6 +115,7 @@ const StoreMaster = () => {
         );
         resetForm();
         fetchStores();
+        window.location.reload();
       })
       .catch((error) => console.error("Error saving data:", error));
   };
@@ -142,8 +144,32 @@ const StoreMaster = () => {
       .delete(`/store/${id}`)
       .then(() => setData(data.filter((store) => store.id !== id)))
       .catch((error) => console.error("Error deleting data:", error))
-      .finally(() => setConfirmDeleteId(null));
+      .finally(() => {
+        setConfirmDeleteId(null);
+        window.location.reload();
+      });
   };
+
+  const toggleStoreStatus = async (id, currentStatus) => {
+    const newStatus = currentStatus === "ACTIVE" ? "INACTIVE" : "ACTIVE";
+    try {
+        console.log(`Updating store status for store ID: ${id} to status: ${newStatus}`);
+        const response = await apiClient.put(`/store/${id}/status`, null, {
+            params: { status: newStatus }
+        });
+        if (response.status === 200) {
+            console.log("Store status updated successfully");
+            setData((prevData) =>
+                prevData.map((store) =>
+                    store.id === id ? { ...store, status: newStatus } : store
+                )
+            );
+            window.location.reload();
+        }
+    } catch (error) {
+        console.error("Error updating store status:", error);
+    }
+};
 
   const resetForm = () => {
     setEditingId(null);
@@ -174,18 +200,17 @@ const StoreMaster = () => {
     <div className="bg-gray-100 min-h-screen">
       <div className="flex justify-between items-center mt-4 mb-4">
         {/* <h1 className="text-xl font-bold text-gray-800 md:text-2xl">All Stores</h1> */}
-        
       </div>
 
       {formVisible ? (
-        <div className="bg-white p-4 rounded-lg shadow-lg">
+        <div className="bg-white p-6 rounded-lg shadow-lg">
           <h2 className="text-lg font-bold mb-4 md:text-xl">
             {editingId ? "Edit Store" : "Add New Store"}
           </h2>
           <form onSubmit={editingId ? handleSaveEdit : handledAddStore}>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <div className="col-span-1">
-                <label className="font-medium">Store Name</label>
+                <label className="block mb-2 font-medium">Store Name</label>
                 <input
                   type="text"
                   name="storeName"
@@ -198,7 +223,7 @@ const StoreMaster = () => {
                   required
                 />
               </div>
-              <div className="mb-4">
+              <div className="col-span-1">
                 <label className="block mb-2 font-medium">Store Owner</label>
                 <input
                   type="text"
@@ -211,12 +236,14 @@ const StoreMaster = () => {
                       storeOwner: e.target.value,
                     })
                   }
+                  required
                 />
               </div>
-              <div className="mb-4">
+              <div className="col-span-1">
                 <label className="block mb-2 font-medium">Contact Number</label>
                 <input
-                  type="number"
+                  type="tel"
+                  maxLength={12}
                   name="storeContactNumber"
                   className="w-full border border-gray-300 p-2 rounded"
                   value={formData.storePhone}
@@ -229,7 +256,7 @@ const StoreMaster = () => {
                   required
                 />
               </div>
-              <div className="mb-4">
+              <div className="col-span-1">
                 <label className="block mb-2 font-medium">Address</label>
                 <input
                   type="text"
@@ -242,7 +269,7 @@ const StoreMaster = () => {
                   required
                 />
               </div>
-              <div className="mb-4">
+              <div className="col-span-1">
                 <label className="block mb-2 font-medium">City</label>
                 <select
                   name="cityId"
@@ -252,6 +279,7 @@ const StoreMaster = () => {
                     setFormData({ ...formData, cityId: e.target.value });
                     fetchSubcities(e.target.value);
                   }}
+                  required
                 >
                   <option value="" disabled>
                     Select a city
@@ -263,7 +291,7 @@ const StoreMaster = () => {
                   ))}
                 </select>
               </div>
-              <div className="mb-4">
+              <div className="col-span-1">
                 <label className="block mb-2 font-medium">Subcity/Area</label>
                 <select
                   name="subCityId"
@@ -273,6 +301,7 @@ const StoreMaster = () => {
                     setFormData({ ...formData, subCityId: e.target.value })
                   }
                   disabled={!formData.cityId}
+                  required
                 >
                   <option value="" disabled>
                     Select a subcity/area
@@ -284,7 +313,7 @@ const StoreMaster = () => {
                   ))}
                 </select>
               </div>
-              <div className="mb-4">
+              <div className="col-span-1">
                 <label className="block mb-2 font-medium">Google Map URL</label>
                 <input
                   type="text"
@@ -299,7 +328,7 @@ const StoreMaster = () => {
                   }
                 />
               </div>
-              <div className="mb-4">
+              <div className="col-span-1">
                 <label className="block mb-2 font-medium">Store Photos</label>
                 <input
                   type="file"
@@ -333,10 +362,10 @@ const StoreMaster = () => {
                 )}
               </div>
             </div>
-            <div className="flex justify-end">
+            <div className="flex justify-end mt-6">
               <button
                 type="submit"
-                className="px-4 py-2 mr-2 text-white bg-blue-900 rounded hover:bg-blue-600"
+                className="px-4 py-2 mr-2 text-white bg-indigo-900 rounded hover:bg-indigo-600"
               >
                 {editingId ? "Save" : "Add"}
               </button>
@@ -353,19 +382,19 @@ const StoreMaster = () => {
       ) : (
         <div className="bg-white p-6 rounded-lg shadow-lg">
           <div className="flex justify-between items-center mb-6">
-            <h3 className="text-xl font-bold text-blue-900">All Stores</h3>
+            <h3 className="text-xl font-bold text-indigo-900">All Stores</h3>
             {!formVisible && (
-          <button
-            onClick={() => setFormVisible(true)}
-            className="px-4 py-2 bg-blue-900 text-white rounded hover:bg-blue-600"
-          >
-            + Add Store
-          </button>
-        )}
+              <button
+                onClick={() => setFormVisible(true)}
+                className="px-4 py-2 bg-indigo-900 text-white rounded hover:bg-indigo-600"
+              >
+                + Add Store
+              </button>
+            )}
             <input
               type="text"
               placeholder="Search by store name..."
-              className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 w-64 text-sm"
+              className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 w-64 text-sm"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -373,13 +402,14 @@ const StoreMaster = () => {
 
           <div className="overflow-x-auto shadow-md rounded-lg">
             <table className="w-full text-sm text-left">
-              <thead className="text-xs uppercase bg-blue-900 text-white">
+              <thead className="text-xs uppercase bg-indigo-900 text-white">
                 <tr>
                   <th scope="col" className="px-6 py-3">No.</th>
                   <th scope="col" className="px-6 py-3">Store Image</th>
                   <th scope="col" className="px-6 py-3">Store Name</th>
                   <th scope="col" className="px-6 py-3">Contact Number</th>
                   <th scope="col" className="px-6 py-3">Address</th>
+                  <th scope="col" className="px-6 py-3">Status</th>
                   <th scope="col" className="px-6 py-3">Action</th>
                 </tr>
               </thead>
@@ -388,7 +418,7 @@ const StoreMaster = () => {
                   <tr>
                     <td colSpan="7" className="text-center py-6">
                       <div className="flex justify-center items-center">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-900"></div>
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-900"></div>
                         <span className="ml-2">Loading...</span>
                       </div>
                     </td>
@@ -401,7 +431,7 @@ const StoreMaster = () => {
                   </tr>
                 ) : (
                   currentData.map((store, index) => (
-                    <tr key={store.id} className={`border-b hover:bg-blue-50 transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
+                    <tr key={store.id} className={`border-b hover:bg-indigo-50 transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
                       <td className="px-6 py-4 font-medium">{indexOfFirstItem + index + 1}</td>
                       <td className="px-6 py-4">
                         {store.image ? (
@@ -417,10 +447,11 @@ const StoreMaster = () => {
                       <td className="px-6 py-4">{store.name}</td>
                       <td className="px-6 py-4">{store.phone}</td>
                       <td className="px-6 py-4">{store.address}</td>
+                      <td className="px-6 py-4">{store.status}</td>
                       <td className="px-6 py-4">
                         <div className="flex items-center space-x-2">
                           <button
-                            className="px-3 py-1.5 flex items-center text-white bg-blue-700 hover:bg-blue-800 rounded-md transition-colors shadow-sm"
+                            className="px-3 py-1.5 flex items-center text-white bg-indigo-700 hover:bg-indigo-800 rounded-md transition-colors shadow-sm"
                             onClick={() => handleEditStore(store)}
                           >
                             <FaEdit className="mr-1.5" size={14} />
@@ -433,6 +464,13 @@ const StoreMaster = () => {
                             <FaTrash className="mr-1.5" size={14} />
                             Delete
                           </button> */}
+
+                          <button
+                              className={`px-4 py-2 flex items-center text-white rounded ${store.status === "ACTIVE" ? "bg-green-500 hover:bg-green-600": "bg-red-500 hover:bg-red-600"}`}
+                              onClick={()=> toggleStoreStatus(store.id, store.status)}>
+
+                                {store.status === "ACTIVE" ? "Activate" : "Deactivate"}
+                          </button>
                         </div>
                       </td>
                     </tr>
@@ -448,7 +486,7 @@ const StoreMaster = () => {
             </p>
             <div className="flex space-x-1">
               <button
-                className="px-3 py-1.5 text-sm text-white bg-blue-800 rounded-md disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+                className="px-3 py-1.5 text-sm text-white bg-indigo-800 rounded-md disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
                 disabled={currentPage === 1}
                 onClick={() => setCurrentPage((prev) => prev - 1)}
               >
@@ -460,7 +498,7 @@ const StoreMaster = () => {
                     key={index}
                     className={`px-3 py-1.5 rounded-md text-sm ${
                       currentPage === index + 1
-                        ? "bg-blue-800 text-white"
+                        ? "bg-indigo-800 text-white"
                         : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                     } transition-colors`}
                     onClick={() => setCurrentPage(index + 1)}
@@ -475,7 +513,7 @@ const StoreMaster = () => {
                       key={index}
                       className={`px-3 py-1.5 rounded-md text-sm ${
                         currentPage === index + 1
-                          ? "bg-blue-800 text-white"
+                          ? "bg-indigo-800 text-white"
                           : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                       } transition-colors`}
                       onClick={() => setCurrentPage(index + 1)}
@@ -486,7 +524,7 @@ const StoreMaster = () => {
                   {currentPage > 3 && <span className="px-2 py-1.5">...</span>}
                   {currentPage > 3 && currentPage < totalPages - 2 && (
                     <button
-                      className="px-3 py-1.5 rounded-md text-sm bg-blue-800 text-white"
+                      className="px-3 py-1.5 rounded-md text-sm bg-indigo-800 text-white"
                     >
                       {currentPage}
                     </button>
@@ -497,7 +535,7 @@ const StoreMaster = () => {
                       key={totalPages - 2 + index}
                       className={`px-3 py-1.5 rounded-md text-sm ${
                         currentPage === totalPages - 2 + index
-                          ? "bg-blue-800 text-white"
+                          ? "bg-indigo-800 text-white"
                           : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                       } transition-colors`}
                       onClick={() => setCurrentPage(totalPages - 2 + index)}
@@ -510,7 +548,7 @@ const StoreMaster = () => {
               <button
                 disabled={currentPage === totalPages}
                 onClick={() => setCurrentPage((prev) => prev + 1)}
-                className="px-3 py-1.5 text-sm rounded-md bg-blue-800 text-white hover:bg-blue-700 disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed transition-colors"
+                className="px-3 py-1.5 text-sm rounded-md bg-indigo-800 text-white hover:bg-indigo-700 disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed transition-colors"
               >
                 Next
               </button>

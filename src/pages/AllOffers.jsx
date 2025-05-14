@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import apiClient from "../api/apiConfig";
-import { YoutubeIcon } from "lucide-react";
 
 const Allcoupons = () => {
   const [data, setData] = useState([]);
@@ -47,7 +46,7 @@ const Allcoupons = () => {
       }
     };
     fetchCoupons();
-  }, []);
+  }, [currentPage]);
 
   const handledAddcoupon = (e) => {
     e.preventDefault();
@@ -75,6 +74,7 @@ const Allcoupons = () => {
           data.map((coupon) => (coupon.couponId === editingId ? response.data : coupon))
         );
         resetForm();
+        window.location.reload();
       })
       .catch((error) => console.error("Error saving data:", error));
   };
@@ -146,33 +146,27 @@ const Allcoupons = () => {
             row.id === id ? { ...row, status: newStatus ? "Active" : "Inactive" } : row
           )
         );
+        window.location.reload();
       })
       .catch((error) => console.error("Error updating status:", error));
   };
 
   return (
-    <div className=" bg-gray-100 min-h-screen">
+    <div className="bg-gray-100 min-h-screen">
       <div className="flex justify-between items-center mt-4 mb-4">
-        <h1 className="text-xl font-bold text-gray-800 md:text-2xl">All Coupon List</h1>
-        {!formVisible && (
-          <button
-            onClick={() => setFormVisible(true)}
-            className="px-4 py-2 bg-blue-900 text-white rounded hover:bg-blue-600"
-          >
-            + Add Coupon
-          </button>
-        )}
+        {/* <h1 className="text-xl font-bold text-gray-800 md:text-2xl">All Coupon List</h1> */}
+        
       </div>
 
       {formVisible ? (
-        <div className="bg-white p-4 rounded-lg shadow-lg">
+        <div className="bg-white p-6 rounded-lg shadow-lg">
           <h2 className="text-lg font-bold mb-4 md:text-xl">
             {editingId ? "Edit Coupon" : "Add New Coupon"}
           </h2>
           <form onSubmit={editingId ? handleSaveEditCoupon : handledAddcoupon}>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <div className="col-span-1">
-                <label className="block mb-2 font-medium">Coupon Name</label>
+                <label className="block mb-2 font-medium">Coupon Name *</label>
                 <input
                   type="text"
                   name="couponName"
@@ -186,7 +180,7 @@ const Allcoupons = () => {
                 />
               </div>
               <div className="col-span-1">
-                <label className="block mb-2 font-medium">Coupon Code</label>
+                <label className="block mb-2 font-medium">Coupon Code *</label>
                 <input
                   type="text"
                   name="couponCode"
@@ -202,7 +196,7 @@ const Allcoupons = () => {
                 />
               </div>
               <div className="col-span-1">
-                <label className="block mb-2 font-medium">Discount Type</label>
+                <label className="block mb-2 font-medium">Discount Type *</label>
                 <select
                   name="couponType"
                   className="w-full border border-gray-300 p-2 rounded"
@@ -217,7 +211,7 @@ const Allcoupons = () => {
                 </select>
               </div>
               <div className="col-span-1">
-                <label className="block mb-2 font-medium">Discount Value</label>
+                <label className="block mb-2 font-medium">Discount Value *</label>
                 <input
                   type="text"
                   name="discountValue"
@@ -234,7 +228,7 @@ const Allcoupons = () => {
               </div>
               <div className="col-span-1">
                 <label className="block mb-2 font-medium">
-                  Minimum Ride Amount
+                  Minimum Ride Amount *
                 </label>
                 <input
                   type="text"
@@ -247,11 +241,12 @@ const Allcoupons = () => {
                       minimumRideAmount: e.target.value,
                     })
                   }
+                  required
                 />
               </div>
               <div className="col-span-1">
                 <label className="block mb-2 font-medium">
-                  Total Coupons
+                  Total Coupons *
                 </label>
                 <input
                   type="text"
@@ -264,11 +259,12 @@ const Allcoupons = () => {
                       totalCoupon: e.target.value,
                     })
                   }
+                  required
                 />
               </div>
               <div className="col-span-1">
                 <label className="block mb-2 font-medium">
-                  Remaining Coupons
+                  Remaining Coupons <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -281,10 +277,11 @@ const Allcoupons = () => {
                       remainingCoupon: e.target.value,
                     })
                   }
+                  required
                 />
               </div>
               <div className="col-span-1">
-                <label className="block mb-2 font-medium">Start Date</label>
+                <label className="block mb-2 font-medium">Start Date *</label>
                 <input
                   type="date"
                   name="startDate"
@@ -300,7 +297,7 @@ const Allcoupons = () => {
                 />
               </div>
               <div className="col-span-1">
-                <label className="block mb-2 font-medium">End Date</label>
+                <label className="block mb-2 font-medium">End Date *</label>
                 <input
                   type="date"
                   name="endDate"
@@ -316,7 +313,7 @@ const Allcoupons = () => {
                 />
               </div>
               <div className="col-span-1">
-                <label className="block mb-2 font-medium">Status</label>
+                <label className="block mb-2 font-medium">Status *</label>
                 <select
                   name="isActive"
                   className="w-full border border-gray-300 p-2 rounded"
@@ -334,7 +331,7 @@ const Allcoupons = () => {
             <div className="flex justify-end mt-4">
               <button
                 type="submit"
-                className="px-4 py-2 mr-2 text-white bg-blue-900 rounded hover:bg-blue-600"
+                className="px-4 py-2 mr-2 text-white bg-indigo-900 rounded hover:bg-indigo-600"
               >
                 {editingId ? "Save" : "Add"}
               </button>
@@ -349,59 +346,49 @@ const Allcoupons = () => {
           </form>
         </div>
       ) : (
-        <div className="bg-white p-4 shadow-md rounded-lg">
-          <div className="flex justify-between items-center mb-4">
-            <div className="flex items-center">
-              <input
-                type="text"
-                placeholder="Search By Coupon Name..."
-                className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full text-sm"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
+        <div className="bg-white p-6 rounded-lg shadow-lg">
+          <div className="flex justify-between items-center mb-6">
+          <h3 className="text-xl font-bold text-indigo-900">All Coupons</h3>
+          {!formVisible && (
+          <button
+            onClick={() => setFormVisible(true)}
+            className="px-4 py-2 bg-indigo-900 text-white rounded hover:bg-indigo-600"
+          >
+            + Add Coupon
+          </button>
+        )}
+            <input
+              type="text"
+              placeholder="Search By Coupon Name..."
+              className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 w-64 text-sm"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
           </div>
-          <div className="relative overflow-x-auto">
-            <table className="w-full text-sm text-left text-gray-500">
-              <thead className="text-xs text-gray-700 uppercase bg-gray-200">
+          <div className="relative overflow-x-auto shadow-md rounded-lg">
+            <table className="w-full text-sm text-left">
+              <thead className="text-xs uppercase bg-indigo-900 text-white">
                 <tr>
-                  <th scope="col" className="px-4 py-2">
-                    SR. NO.
-                  </th>
-                  <th scope="col" className="px-4 py-2">
-                    Coupon Name
-                  </th>
-                  <th scope="col" className="px-4 py-2">
-                    Coupon Code
-                  </th>
-                  <th scope="col" className="px-4 py-2">
-                    Discount
-                  </th>
-                  <th scope="col" className="px-4 py-2">
-                    Total Coupons
-                  </th>
-                  <th scope="col" className="px-4 py-2">
-                    Remaining Coupons
-                  </th>
-                  <th scope="col" className="px-4 py-2">
-                    Start Date
-                  </th>
-                  <th scope="col" className="px-4 py-2">
-                    End Date
-                  </th>
-                  <th scope="col" className="px-4 py-2">
-                    Status
-                  </th>
-                  <th scope="col" className="px-4 py-2">
-                    Action
-                  </th>
+                  <th scope="col" className="px-6 py-3">No.</th>
+                  <th scope="col" className="px-6 py-3">Coupon Name</th>
+                  <th scope="col" className="px-6 py-3">Coupon Code</th>
+                  <th scope="col" className="px-6 py-3">Discount</th>
+                  <th scope="col" className="px-6 py-3">Total Coupons</th>
+                  <th scope="col" className="px-6 py-3">Remaining Coupons</th>
+                  <th scope="col" className="px-6 py-3">Start Date</th>
+                  <th scope="col" className="px-6 py-3">End Date</th>
+                  <th scope="col" className="px-6 py-3">Status</th>
+                  <th scope="col" className="px-6 py-3">Action</th>
                 </tr>
               </thead>
               <tbody>
                 {loading ? (
                   <tr>
-                    <td colSpan="10" className="text-center py-4">
-                      Loading...
+                    <td colSpan="10" className="text-center py-6">
+                      <div className="flex justify-center items-center">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-900"></div>
+                        <span className="ml-2">Loading...</span>
+                      </div>
                     </td>
                   </tr>
                 ) : currentData.length === 0 ? (
@@ -414,17 +401,17 @@ const Allcoupons = () => {
                   currentData.map((coupon, index) => (
                     <tr
                       key={coupon.couponId}
-                      className="bg-white border-b hover:bg-gray-50"
+                      className={`border-b hover:bg-indigo-50 transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}
                     >
-                      <td className="px-4 py-3">{startingSerialNumber + index}</td>
-                      <td className="px-4 py-3">{coupon.couponName}</td>
-                      <td className="px-4 py-3">{coupon.couponCode}</td>
-                      <td className="px-4 py-3">{coupon.discountValue}</td>
-                      <td className="px-4 py-3">{coupon.totalCoupon}</td>
-                      <td className="px-4 py-3">{coupon.remainingCoupon}</td>
-                      <td className="px-4 py-3">{coupon.startDate}</td>
-                      <td className="px-4 py-3">{coupon.endDate}</td>
-                      <td className="px-4 py-3">
+                      <td className="px-6 py-4 font-medium">{startingSerialNumber + index}</td>
+                      <td className="px-6 py-4">{coupon.couponName}</td>
+                      <td className="px-6 py-4">{coupon.couponCode}</td>
+                      <td className="px-6 py-4">{coupon.discountValue}</td>
+                      <td className="px-6 py-4">{coupon.totalCoupon}</td>
+                      <td className="px-6 py-4">{coupon.remainingCoupon}</td>
+                      <td className="px-6 py-4">{coupon.startDate}</td>
+                      <td className="px-6 py-4">{coupon.endDate}</td>
+                      <td className="px-6 py-4">
                         <button
                           className={`px-2 py-1 rounded ${
                             coupon.isActive ? "bg-green-600 hover:bg-green-600 text-white" : "bg-red-700 hover:bg-red-600 text-white"
@@ -434,13 +421,13 @@ const Allcoupons = () => {
                           {coupon.isActive ? "Active" : "Inactive"}
                         </button>
                       </td>
-                      <td className="px-4 py-3">
+                      <td className="px-6 py-4">
                         <div className="flex items-center space-x-2">
                           <button
-                            className="px-3 py-1 flex items-center text-white bg-blue-800 hover:bg-blue-600 rounded"
+                            className="px-3 py-1.5 flex items-center text-white bg-indigo-800 hover:bg-indigo-600 rounded"
                             onClick={() => handleEditCoupon(coupon)}
                           >
-                            <FaEdit className="mr-1" />
+                            <FaEdit className="mr-1.5" size={14} />
                             Edit
                           </button>
                         </div>
@@ -475,41 +462,75 @@ const Allcoupons = () => {
               </div>
             </div>
           )}
-          <div className="flex justify-between items-center mt-4">
-            <p className="text-sm text-gray-500">
-              Showing {indexOfFirstItem + 1} to{" "}
-              {Math.min(indexOfLastItem, filteredData.length)} of{" "}
-              {filteredData.length} entries
+          <div className="flex justify-between items-center mt-6">
+            <p className="text-sm text-gray-600">
+              Showing {indexOfFirstItem + 1} to {Math.min(indexOfLastItem, filteredData.length)} of {filteredData.length} entries
             </p>
-            <div className="flex space-x-2">
+            <div className="flex space-x-1">
               <button
-                className="px-3 py-1 text-sm text-white bg-blue-900 rounded disabled:bg-gray-300 disabled:cursor-not-allowed"
+                className="px-3 py-1.5 text-sm text-white bg-indigo-800 rounded-md disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
                 disabled={currentPage === 1}
                 onClick={() => setCurrentPage((prev) => prev - 1)}
               >
                 Previous
               </button>
-              {[...Array(totalPages)].map((_, index) => (
-                <button
-                  key={index}
-                  className={`px-3 py-1 rounded ${
-                    currentPage === index + 1
-                      ? "bg-blue-900 text-white"
-                      : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                  }`}
-                  onClick={() => setCurrentPage(index + 1)}
-                >
-                  {index + 1}
-                </button>
-              ))}
+              {totalPages <= 5 ? (
+                [...Array(totalPages)].map((_, index) => (
+                  <button
+                    key={index}
+                    className={`px-3 py-1.5 rounded-md text-sm ${
+                      currentPage === index + 1
+                        ? "bg-indigo-800 text-white"
+                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    } transition-colors`}
+                    onClick={() => setCurrentPage(index + 1)}
+                  >
+                    {index + 1}
+                  </button>
+                ))
+              ) : (
+                <>
+                  {[...Array(Math.min(3, currentPage))].map((_, index) => (
+                    <button
+                      key={index}
+                      className={`px-3 py-1.5 rounded-md text-sm ${
+                        currentPage === index + 1
+                          ? "bg-indigo-800 text-white"
+                          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                      } transition-colors`}
+                      onClick={() => setCurrentPage(index + 1)}
+                    >
+                      {index + 1}
+                    </button>
+                  ))}
+                  {currentPage > 3 && <span className="px-2 py-1.5">...</span>}
+                  {currentPage > 3 && currentPage < totalPages - 2 && (
+                    <button
+                      className="px-3 py-1.5 rounded-md text-sm bg-indigo-800 text-white"
+                    >
+                      {currentPage}
+                    </button>
+                  )}
+                  {currentPage < totalPages - 2 && <span className="px-2 py-1.5">...</span>}
+                  {[...Array(Math.min(3, totalPages - Math.max(0, totalPages - 3)))].map((_, index) => (
+                    <button
+                      key={totalPages - 2 + index}
+                      className={`px-3 py-1.5 rounded-md text-sm ${
+                        currentPage === totalPages - 2 + index
+                          ? "bg-indigo-800 text-white"
+                          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                      } transition-colors`}
+                      onClick={() => setCurrentPage(totalPages - 2 + index)}
+                    >
+                      {totalPages - 2 + index}
+                    </button>
+                  ))}
+                </>
+              )}
               <button
                 disabled={currentPage === totalPages}
                 onClick={() => setCurrentPage((prev) => prev + 1)}
-                className={`px-3 py-1 rounded ${
-                  currentPage === totalPages
-                    ? "bg-gray-300 text-gray-500"
-                    : "bg-blue-900 text-white hover:bg-blue-600"
-                }`}
+                className="px-3 py-1.5 text-sm rounded-md bg-indigo-800 text-white hover:bg-indigo-700 disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed transition-colors"
               >
                 Next
               </button>
