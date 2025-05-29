@@ -27,7 +27,7 @@ const Header = () => {
   }, []);
 
   return (
-    <header className="bg-gradient-to-r from-blue-900 to-blue-800 text-white shadow-lg sticky top-0 z-10">
+    <header className="bg-gradient-to-r from-blue-900 to-blue-800 text-white sticky top-0 z-10">
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center px-4 py-3">
           {/* Logo & Mobile Menu */}

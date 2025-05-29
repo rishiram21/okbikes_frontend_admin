@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { FaEdit } from "react-icons/fa";
+import apiClient from "../../api/apiConfig";
 
 const DeliveryAtLocationPrices = () => {
   const [data, setData] = useState([]);
@@ -19,8 +20,8 @@ const DeliveryAtLocationPrices = () => {
     const fetchDeliveryPrices = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(
-          "http://localhost:8080/api/deliveryprice/list"
+        const response = await apiClient.get(
+          "/api/deliveryprice/list"
         );
         setData(response.data);
       } catch (error) {
@@ -34,8 +35,8 @@ const DeliveryAtLocationPrices = () => {
 
   const handleAddDeliveryPrice = (e) => {
     e.preventDefault();
-    axios
-      .post("http://localhost:8080/api/deliveryprice/save", formData)
+    apiClient
+      .post("/api/deliveryprice/save", formData)
       .then((response) => {
         setData([...data, response.data]);
         resetForm();
@@ -45,8 +46,8 @@ const DeliveryAtLocationPrices = () => {
 
   const handleSaveEdit = (e) => {
     e.preventDefault();
-    axios
-      .put(`http://localhost:8080/api/deliveryprice/${editingId}`, formData)
+    apiClient
+      .put(`/api/deliveryprice/${editingId}`, formData)
       .then((response) => {
         setData(
           data.map((item) => (item.id === editingId ? response.data : item))

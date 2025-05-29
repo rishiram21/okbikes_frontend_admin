@@ -252,7 +252,7 @@ const Sidebar = () => {
                             <Link
                               key={subitem.id}
                               to={subitem.path}
-                              className="hidden group-hover:block absolute left-full top-0 ml-2 px-4 py-2 bg-blue-800 text-white rounded shadow-lg whitespace-nowrap"
+                              className="hidden group-hover:block absolute left-full top-0 ml-2 px-4 py-2 bg-blue-800 text-white rounded whitespace-nowrap"
                               onClick={(e) => {
                                 e.preventDefault(); // Prevent default Link behavior
                                 handleLinkClick(index, subitem.path);
