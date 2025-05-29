@@ -113,7 +113,7 @@ const Sidebar = () => {
     { id: 3, path: "/dashboard/allBikes", name: "All Bikes", icon: RiMotorbikeLine },
     { id: 4, name: "Price Master", icon: IoLayersOutline,
       submenu: [
-        { id: 41, path: "/dashboard/priceMaster/deliveryAtLocationPrices", name: "Delivery" },
+        // { id: 41, path: "/dashboard/priceMaster/deliveryAtLocationPrices", name: "Delivery" },
         { id: 42, path: "/dashboard/priceMaster/PickUpTariffPlan", name: "Pick Up" },
       ],
     },
@@ -124,7 +124,7 @@ const Sidebar = () => {
         { id: 53, path: "/dashboard/masterRecords/allModels", name: "All Models" },
       ],
     },
-    { id: 6, path: "/dashboard/allOffers", name: "All Offers", icon: IoPricetagsOutline },
+    // { id: 6, path: "/dashboard/allOffers", name: "All Offers", icon: IoPricetagsOutline },
     { id: 9, path: "/dashboard/allRegisterCustomers", name: "All Registered Customers", icon: LuUsers2 },
     // { id: 10, name: "All Reports", icon: TbReportSearch,
     //   submenu: [

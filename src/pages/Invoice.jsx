@@ -26,9 +26,15 @@ const Invoice = ({ booking, charges, lateCharges = 0, challans = [], damages = [
 
   // Calculate subtotal and total
   const packagePrice = booking.vehiclePackage.price || 0;
-  const gst = packagePrice * 0.18;
+  const durationInDays = parseInt(calculateDuration()); // Extract days from "5 days 0 hours 0 minutes"
+  const totalPackagePrice = packagePrice * durationInDays;
+
+  // Check if delivery charge should be added
+  const deliveryCharge = booking.addressType === 'DELIVERY_AT_LOCATION' ? 250 : 0;
+
+  const gst = totalPackagePrice * 0.18;
   const convenienceFee = 2.00;
-  const subtotal = packagePrice + gst + convenienceFee;
+  const subtotal = totalPackagePrice + gst + convenienceFee + deliveryCharge;
   const additionalChargesTotal = charges.reduce((sum, charge) => sum + Number(charge.amount), 0);
   const challansTotal = challans.reduce((sum, challan) => sum + Number(challan.amount), 0);
   const damagesTotal = damages.reduce((sum, damage) => sum + Number(damage.amount), 0);
@@ -39,14 +45,6 @@ const Invoice = ({ booking, charges, lateCharges = 0, challans = [], damages = [
       {/* Header */}
       <div className="bg-gradient-to-r from-blue-900 to-blue-800 text-white p-8 rounded-t-lg flex justify-between items-center">
         <div className="flex items-center space-x-4">
-          {/* <div className="bg-white rounded-full p-2 shadow-lg">
-            <svg className="w-10 h-10 text-blue-800" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="25" cy="25" r="24" stroke="currentColor" strokeWidth="2" />
-              <path d="M15 30C18.866 30 22 26.866 22 23C22 19.134 18.866 16 15 16C11.134 16 8 19.134 8 23C8 26.866 11.134 30 15 30Z" fill="currentColor" />
-              <path d="M35 30C38.866 30 42 26.866 42 23C42 19.134 38.866 16 35 16C31.134 16 28 19.134 28 23C28 26.866 31.134 30 35 30Z" fill="currentColor" />
-              <path d="M25 15L25 35" stroke="currentColor" strokeWidth="2" />
-            </svg>
-          </div> */}
           <div>
             <h1 className="text-3xl font-bold tracking-tight">OkBikes</h1>
             <p className="text-blue-100">Ride with confidence</p>
@@ -62,10 +60,6 @@ const Invoice = ({ booking, charges, lateCharges = 0, challans = [], damages = [
 
       {/* Status Bar */}
       <div className="bg-blue-50 px-8 py-3 border-b border-blue-100 flex justify-between items-center">
-        {/* <div className="flex items-center">
-          <div className={`w-3 h-3 rounded-full mr-2 ${booking.paymentStatus === 'Paid' ? 'bg-green-500' : 'bg-yellow-500'}`}></div>
-          <span className="font-medium text-gray-700">Status: {booking.paymentStatus || "Pending"}</span>
-        </div> */}
         <div className="text-gray-600">
           <span>Invoice Date: </span>
           <span className="font-medium">{today}</span>
@@ -79,14 +73,12 @@ const Invoice = ({ booking, charges, lateCharges = 0, challans = [], damages = [
           <div className="bg-gray-50 rounded-lg p-4 border-l-4 border-blue-800 w-5/12">
             <h3 className="font-bold text-gray-700 mb-2 text-sm uppercase tracking-wider">Billed To:</h3>
             <p className="text-gray-800 font-medium text-lg">{booking.userName}</p>
-            {/* <p className="text-gray-600 mt-1">{booking.userEmail || "email@example.com"}</p> */}
             <p className="text-gray-600">{booking.userPhone || "+91 XXXXX-XXXXX"}</p>
           </div>
           <div className="bg-gray-50 rounded-lg p-4 border-l-4 border-blue-800 w-5/12">
             <h3 className="font-bold text-gray-700 mb-2 text-sm uppercase tracking-wider">Payment Details:</h3>
-            <p className="text-gray-600">Payment Mode: <span className="font-medium">{booking.paymentMode || "Cash On Center"}</span></p>
+            <p className="text-gray-600">Payment Mode: <span className="font-medium">{booking.paymentMethod || "Cash On Center"}</span></p>
             <p className="text-gray-600">Security Deposit: <span className="font-medium">₹{booking.vehiclePackage.deposit}</span></p>
-            {/* <p className="text-gray-600">Payment ID: <span className="font-medium">{booking.paymentId || "N/A"}</span></p> */}
           </div>
         </div>
 
@@ -161,8 +153,11 @@ const Invoice = ({ booking, charges, lateCharges = 0, challans = [], damages = [
               <tbody className="divide-y divide-gray-200">
                 <tr>
                   <td className="py-3 px-4 text-gray-700">Package Price</td>
-                  <td className="py-3 px-4 text-gray-700 text-right">₹{packagePrice.toFixed(2)}</td>
+                  <td className="py-3 px-4 text-gray-700 text-right">
+                    ₹{(packagePrice * parseInt(calculateDuration())).toFixed(2)}
+                  </td>
                 </tr>
+                
                 <tr>
                   <td className="py-3 px-4 text-gray-700">GST (18%)</td>
                   <td className="py-3 px-4 text-gray-700 text-right">₹{gst.toFixed(2)}</td>
@@ -171,30 +166,12 @@ const Invoice = ({ booking, charges, lateCharges = 0, challans = [], damages = [
                   <td className="py-3 px-4 text-gray-700">Convenience Fee</td>
                   <td className="py-3 px-4 text-gray-700 text-right">₹{convenienceFee.toFixed(2)}</td>
                 </tr>
-                {charges.map((charge, index) => (
-                  <tr key={index}>
-                    <td className="py-3 px-4 text-gray-700">{charge.type}</td>
-                    <td className="py-3 px-4 text-gray-700 text-right">₹{charge.amount.toFixed(2)}</td>
-                  </tr>
-                ))}
-                {lateCharges > 0 && (
-                  <tr className="bg-red-50">
-                    <td className="py-3 px-4 text-red-700 font-medium">Late Charges</td>
-                    <td className="py-3 px-4 text-red-700 font-medium text-right">₹{lateCharges.toFixed(2)}</td>
+                {booking.addressType === 'DELIVERY_AT_LOCATION' && (
+                  <tr className="bg-blue-50">
+                    <td className="py-3 px-4 text-blue-700 font-medium">Delivery Charge</td>
+                    <td className="py-3 px-4 text-blue-700 font-medium text-right">₹{deliveryCharge.toFixed(2)}</td>
                   </tr>
                 )}
-                {challans.map((challan, index) => (
-                  <tr key={index} className="bg-orange-50">
-                    <td className="py-3 px-4 text-orange-700">Traffic Challan: {challan.description}</td>
-                    <td className="py-3 px-4 text-orange-700 text-right">₹{challan.amount.toFixed(2)}</td>
-                  </tr>
-                ))}
-                {damages.map((damage, index) => (
-                  <tr key={index} className="bg-red-50">
-                    <td className="py-3 px-4 text-red-700">Damage: {damage.description}</td>
-                    <td className="py-3 px-4 text-red-700 text-right">₹{damage.amount.toFixed(2)}</td>
-                  </tr>
-                ))}
               </tbody>
               <tfoot className="bg-blue-50">
                 <tr className="border-t-2 border-blue-200">
@@ -203,7 +180,9 @@ const Invoice = ({ booking, charges, lateCharges = 0, challans = [], damages = [
                 </tr>
               </tfoot>
             </table>
-             <td className='font-semibold text-red-600'>* Note Deposit is not included in Total Amount</td>
+            <div className="px-4 py-2 bg-gray-50">
+              <p className="font-semibold text-red-600 text-sm">* Note: Deposit is not included in Total Amount</p>
+            </div>
           </div>
         </div>
 
@@ -221,21 +200,11 @@ const Invoice = ({ booking, charges, lateCharges = 0, challans = [], damages = [
             <li>Fuel charges are not included in the package price.</li>
             <li>The renter is responsible for any traffic violations during the rental period.</li>
             <li>Damages to the vehicle will be charged as per assessment.</li>
+            {booking.addressType === 'DELIVERY_AT_LOCATION' && (
+              <li>Delivery charge of ₹250 applies for location-based delivery service.</li>
+            )}
           </ul>
         </div>
-
-        {/* QR Code
-        <div className="flex justify-end mb-6">
-          <div className="text-center">
-            <div className="bg-gray-100 p-2 rounded-lg inline-block">
-              <svg className="w-24 h-24" viewBox="0 0 100 100">
-                <rect x="10" y="10" width="80" height="80" fill="white" />
-                <path d="M20 20h20v20h-20z M60 20h20v20h-20z M20 60h20v20h-20z M45 20h10v60h-10z M60 45h20v10h-20z M60 60h10v10h-10z M75 60h5v20h-5z M60 75h10v5h-10z" fill="black" />
-              </svg>
-            </div>
-            <p className="text-xs text-gray-500 mt-1">Scan for digital copy</p>
-          </div>
-        </div> */}
 
         {/* Footer */}
         <div className="text-center text-sm text-gray-600 mt-8 border-t border-gray-200 pt-6">

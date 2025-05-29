@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { FaEye } from "react-icons/fa";
 import apiClient from "../api/apiConfig";
-import { motion } from "framer-motion";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Plus, Trash2 } from 'lucide-react';
@@ -456,10 +455,10 @@ const BookingDetails = ({
           <div className="flex flex-col">
             <label className="text-gray-700 font-semibold mb-2">Payment Details</label>
             <div className="bg-gray-50 p-4 rounded-lg shadow-sm flex-grow">
-              <div className="flex justify-between mb-2">
+              {/* <div className="flex justify-between mb-2">
                 <span className="text-gray-600">Package:</span>
                 <span className="font-medium">₹{selectedBooking.vehiclePackage.price}</span>
-              </div>
+              </div> */}
               <div className="flex justify-between mb-2">
                 <span className="text-gray-600">Deposit:</span>
                 <span className="font-medium">₹{selectedBooking.vehiclePackage.deposit}</span>
@@ -474,15 +473,15 @@ const BookingDetails = ({
                 <span className="text-gray-600">Convenience Fee:</span>
                 <span className="font-medium">₹2.00</span>
               </div>
-              <div className="flex justify-between mb-2">
+              {/* <div className="flex justify-between mb-2">
                 <span className="text-gray-600">Late Charges:</span>
                 <span className="font-medium">₹{calculateLateCharges()}</span>
-              </div>
+              </div> */}
               <div className="pt-2 mt-1">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Payment Mode:</span>
                   <span className="text-green-600 font-semibold">
-                    {selectedBooking.paymentMode || "Cash On Center"}
+                    {selectedBooking.paymentMethod || "Cash On Center"}
                   </span>
                 </div>
               </div>
@@ -591,9 +590,9 @@ const BookingDetails = ({
       <div className="my-8 h-px bg-gray-300"></div>
 
       <div className="mt-8">
-        <h4 className="text-lg font-semibold mb-4 text-indigo-900 border-b pb-2">Additional Charges</h4>
+        {/* <h4 className="text-lg font-semibold mb-4 text-indigo-900 border-b pb-2">Additional Charges</h4> */}
         <div className="flex flex-col gap-6">
-          <div className="space-y-3">
+          {/* <div className="space-y-3">
             <label className="block text-gray-700 font-semibold mb-2">Charge Details</label>
 
             {charges.map((charge, index) => (
@@ -655,7 +654,7 @@ const BookingDetails = ({
                 Save
               </button>
             )}
-          </div>
+          </div> */}
 
           <div className="w-full mt-6">
             <label className="block text-gray-700 font-semibold mb-2">Booking Status</label>
@@ -706,19 +705,19 @@ const BookingDetails = ({
               <>
                 <div className="space-y-1">
                   <p className="text-xs text-gray-500">Front</p>
-                  <img src={`${import.meta.env.VITE_BASE_URL}/uploads/bookings/${selectedBooking.bookingId}/front.jpg`} alt="Front" />
+                  <img src={`${import.meta.env.VITE_BASE_URL}/uploads/bookings/${selectedBooking.bookingId}/front.jpg`} alt="Front" className='border-4' />
                 </div>
                 <div className="space-y-1">
                   <p className="text-xs text-gray-500">Left</p>
-                  <img src={`${import.meta.env.VITE_BASE_URL}/uploads/bookings/${selectedBooking.bookingId}/left.jpg`} alt="Left" />
+                  <img src={`${import.meta.env.VITE_BASE_URL}/uploads/bookings/${selectedBooking.bookingId}/left.jpg`} alt="Left"  className='border-4' />
                 </div>
                 <div className="space-y-1">
                   <p className="text-xs text-gray-500">Right</p>
-                  <img src={`${import.meta.env.VITE_BASE_URL}/uploads/bookings/${selectedBooking.bookingId}/right.jpg`} alt="Right" />
+                  <img src={`${import.meta.env.VITE_BASE_URL}/uploads/bookings/${selectedBooking.bookingId}/right.jpg`} alt="Right"  className='border-4' />
                 </div>
                 <div className="space-y-1">
                   <p className="text-xs text-gray-500">Back</p>
-                  <img src={`${import.meta.env.VITE_BASE_URL}/uploads/bookings/${selectedBooking.bookingId}/back.jpg`} alt="Back" />
+                  <img src={`${import.meta.env.VITE_BASE_URL}/uploads/bookings/${selectedBooking.bookingId}/back.jpg`} alt="Back"  className='border-4' />
                 </div>
               </>
             )}
@@ -732,19 +731,19 @@ const BookingDetails = ({
               <>
                 <div className="space-y-1">
                   <p className="text-xs text-gray-500">Front</p>
-                  <img src={`${import.meta.env.VITE_BASE_URL}/uploads/bookings/${selectedBooking.bookingId}/end/front_end.jpg`} alt="Front" />
+                  <img src={`${import.meta.env.VITE_BASE_URL}/uploads/bookings/${selectedBooking.bookingId}/end/front_end.jpg`} alt="Front"  className='border-4' />
                 </div>
                 <div className="space-y-1">
                   <p className="text-xs text-gray-500">Left</p>
-                  <img src={`${import.meta.env.VITE_BASE_URL}/uploads/bookings/${selectedBooking.bookingId}/end/left_end.jpg`} alt="Left" />
+                  <img src={`${import.meta.env.VITE_BASE_URL}/uploads/bookings/${selectedBooking.bookingId}/end/left_end.jpg`} alt="Left" className='border-4'/>
                 </div>
                 <div className="space-y-1">
                   <p className="text-xs text-gray-500">Right</p>
-                  <img src={`${import.meta.env.VITE_BASE_URL}/uploads/bookings/${selectedBooking.bookingId}/end/right_end.jpg`} alt="Right" />
+                  <img src={`${import.meta.env.VITE_BASE_URL}/uploads/bookings/${selectedBooking.bookingId}/end/right_end.jpg`} alt="Right" className='border-4' />
                 </div>
                 <div className="space-y-1">
                   <p className="text-xs text-gray-500">Back</p>
-                  <img src={`${import.meta.env.VITE_BASE_URL}/uploads/bookings/${selectedBooking.bookingId}/end/back_end.jpg`} alt="Back" />
+                  <img src={`${import.meta.env.VITE_BASE_URL}/uploads/bookings/${selectedBooking.bookingId}/end/back_end.jpg`} alt="Back" className='border-4' />
                 </div>
               </>
             )}
