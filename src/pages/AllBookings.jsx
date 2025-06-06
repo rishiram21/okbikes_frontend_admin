@@ -32,15 +32,15 @@ const AllBookings = () => {
     drivingLicense: 'PENDING',
   });
   const [statusMessage, setStatusMessage] = useState("");
-  const [charges, setCharges] = useState([
-    { type: 'Challan', amount: 0 }
-  ]);
+  const [charges, setCharges] = useState([{ type: 'Challan', amount: 0 }]);
   const [challans, setChallans] = useState([]);
   const [damages, setDamages] = useState([]);
   const [chargesEditable, setChargesEditable] = useState(true);
   const [showInvoice, setShowInvoice] = useState(false);
 
   const chargeTypes = ['Challan', 'Damage', 'Additional'];
+
+  
 
   const handleAddCharge = () => {
     setCharges([...charges, { type: 'Challan', amount: 0 }]);
@@ -87,6 +87,14 @@ const AllBookings = () => {
             challans: combinedResponse.data.booking.challans || [],
             damages: combinedResponse.data.booking.damages || [],
             vehicleNumber: combinedResponse.data.vehicle.vehicleRegistrationNumber,
+            frontImageUrl: combinedResponse.data.booking.frontImageUrl,
+            leftImageUrl: combinedResponse.data.booking.leftImageUrl,
+            rightImageUrl: combinedResponse.data.booking.rightImageUrl,
+            backImageUrl: combinedResponse.data.booking.backImageUrl,
+            frontEndImageUrl: combinedResponse.data.booking.frontEndImageUrl,
+            leftEndImageUrl: combinedResponse.data.booking.leftEndImageUrl,
+            rightEndImageUrl: combinedResponse.data.booking.rightEndImageUrl,
+            backEndImageUrl: combinedResponse.data.booking.backEndImageUrl,
           };
         })
       );
@@ -363,7 +371,7 @@ const AllBookings = () => {
           calculateLateCharges={calculateLateCharges}
           statusMessage={statusMessage}
           chargeTypes={chargeTypes}
-          BookingStatus={BookingStatus} // Pass BookingStatus as a prop
+          BookingStatus={BookingStatus}
         />
       ) : (
         <AllBookingsList
@@ -377,8 +385,8 @@ const AllBookings = () => {
           totalPages={totalPages}
           filteredData={filteredData}
           handleView={handleView}
-          indexOfFirstItem={indexOfFirstItem} // Pass indexOfFirstItem as a prop
-          indexOfLastItem={indexOfLastItem} // Pass indexOfLastItem as a prop
+          indexOfFirstItem={indexOfFirstItem}
+          indexOfLastItem={indexOfLastItem}
         />
       )}
     </div>
@@ -408,7 +416,7 @@ const BookingDetails = ({
   calculateLateCharges,
   statusMessage,
   chargeTypes,
-  BookingStatus // Receive BookingStatus as a prop
+  BookingStatus,
 }) => {
   return (
     <div className="bg-white p-6 rounded-lg shadow-lg">
@@ -455,10 +463,6 @@ const BookingDetails = ({
           <div className="flex flex-col">
             <label className="text-gray-700 font-semibold mb-2">Payment Details</label>
             <div className="bg-gray-50 p-4 rounded-lg shadow-sm flex-grow">
-              {/* <div className="flex justify-between mb-2">
-                <span className="text-gray-600">Package:</span>
-                <span className="font-medium">₹{selectedBooking.vehiclePackage.price}</span>
-              </div> */}
               <div className="flex justify-between mb-2">
                 <span className="text-gray-600">Deposit:</span>
                 <span className="font-medium">₹{selectedBooking.vehiclePackage.deposit}</span>
@@ -473,10 +477,6 @@ const BookingDetails = ({
                 <span className="text-gray-600">Convenience Fee:</span>
                 <span className="font-medium">₹2.00</span>
               </div>
-              {/* <div className="flex justify-between mb-2">
-                <span className="text-gray-600">Late Charges:</span>
-                <span className="font-medium">₹{calculateLateCharges()}</span>
-              </div> */}
               <div className="pt-2 mt-1">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Payment Mode:</span>
@@ -590,72 +590,7 @@ const BookingDetails = ({
       <div className="my-8 h-px bg-gray-300"></div>
 
       <div className="mt-8">
-        {/* <h4 className="text-lg font-semibold mb-4 text-indigo-900 border-b pb-2">Additional Charges</h4> */}
         <div className="flex flex-col gap-6">
-          {/* <div className="space-y-3">
-            <label className="block text-gray-700 font-semibold mb-2">Charge Details</label>
-
-            {charges.map((charge, index) => (
-              <div key={index} className="flex items-center gap-3 bg-gray-50 p-3 rounded-md">
-                <div className="w-1/3">
-                  <select
-                    value={charge.type}
-                    onChange={(e) => handleChangeType(index, e.target.value)}
-                    className="block w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-indigo-500 focus:border-indigo-500"
-                    disabled={!chargesEditable}
-                  >
-                    {chargeTypes.map((type) => (
-                      <option key={type} value={type}>{type}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="w-1/4">
-                <input
-  type="tel"
-  min="0"
-  value={charge.amount}
-  onChange={(e) => handleChangeAmount(index, e.target.value)}
-  placeholder="Amount"
-  className="block w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-indigo-500 focus:border-indigo-500"
-  disabled={!chargesEditable}
-/>
-
-                </div>
-
-                {charges.length > 1 && chargesEditable && (
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveCharge(index)}
-                    className="p-2 text-red-600 hover:text-red-800 bg-red-50 rounded-full flex items-center justify-center"
-                  >
-                    <Trash2 size={18} />
-                  </button>
-                )}
-              </div>
-            ))}
-
-            {chargesEditable && (
-              <button
-                type="button"
-                onClick={handleAddCharge}
-                className="flex items-center px-4 py-2 bg-indigo-800 text-white font-medium rounded-md hover:bg-indigo-700 transition-colors mt-2"
-              >
-                <Plus size={16} className="mr-2" /> Add Charge
-              </button>
-            )}
-
-            {chargesEditable && (
-              <button
-                type="button"
-                onClick={handleSaveCharges}
-                className="flex items-center px-4 py-2 bg-indigo-800 text-white font-medium rounded-md hover:bg-indigo-700 transition-colors mt-2"
-              >
-                Save
-              </button>
-            )}
-          </div> */}
-
           <div className="w-full mt-6">
             <label className="block text-gray-700 font-semibold mb-2">Booking Status</label>
             <div className="bg-gray-50 p-4 rounded-md">
@@ -697,59 +632,66 @@ const BookingDetails = ({
 
       <div className="my-8 h-px bg-gray-300"></div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
-        <div>
-          <h4 className="text-lg font-semibold mb-4 text-indigo-900 border-b pb-2">Before Trip Images</h4>
-          <div className="grid grid-cols-2 gap-4">
-            {selectedBooking && (
-              <>
-                <div className="space-y-1">
-                  <p className="text-xs text-gray-500">Front</p>
-                  <img src={`${import.meta.env.VITE_BASE_URL}/uploads/bookings/${selectedBooking.bookingId}/front.jpg`} alt="Front" className='border-4' />
-                </div>
-                <div className="space-y-1">
-                  <p className="text-xs text-gray-500">Left</p>
-                  <img src={`${import.meta.env.VITE_BASE_URL}/uploads/bookings/${selectedBooking.bookingId}/left.jpg`} alt="Left"  className='border-4' />
-                </div>
-                <div className="space-y-1">
-                  <p className="text-xs text-gray-500">Right</p>
-                  <img src={`${import.meta.env.VITE_BASE_URL}/uploads/bookings/${selectedBooking.bookingId}/right.jpg`} alt="Right"  className='border-4' />
-                </div>
-                <div className="space-y-1">
-                  <p className="text-xs text-gray-500">Back</p>
-                  <img src={`${import.meta.env.VITE_BASE_URL}/uploads/bookings/${selectedBooking.bookingId}/back.jpg`} alt="Back"  className='border-4' />
-                </div>
-              </>
-            )}
-          </div>
-        </div>
 
-        <div>
-          <h4 className="text-lg font-semibold mb-4 text-indigo-900 border-b pb-2">After Trip Images</h4>
-          <div className="grid grid-cols-2 gap-4">
-            {selectedBooking && (
-              <>
-                <div className="space-y-1">
-                  <p className="text-xs text-gray-500">Front</p>
-                  <img src={`${import.meta.env.VITE_BASE_URL}/uploads/bookings/${selectedBooking.bookingId}/end/front_end.jpg`} alt="Front"  className='border-4' />
-                </div>
-                <div className="space-y-1">
-                  <p className="text-xs text-gray-500">Left</p>
-                  <img src={`${import.meta.env.VITE_BASE_URL}/uploads/bookings/${selectedBooking.bookingId}/end/left_end.jpg`} alt="Left" className='border-4'/>
-                </div>
-                <div className="space-y-1">
-                  <p className="text-xs text-gray-500">Right</p>
-                  <img src={`${import.meta.env.VITE_BASE_URL}/uploads/bookings/${selectedBooking.bookingId}/end/right_end.jpg`} alt="Right" className='border-4' />
-                </div>
-                <div className="space-y-1">
-                  <p className="text-xs text-gray-500">Back</p>
-                  <img src={`${import.meta.env.VITE_BASE_URL}/uploads/bookings/${selectedBooking.bookingId}/end/back_end.jpg`} alt="Back" className='border-4' />
-                </div>
-              </>
-            )}
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+  <div>
+    <h4 className="text-lg font-semibold mb-4 text-indigo-900 border-b pb-2">Before Trip Images</h4>
+    <div className="grid grid-cols-2 gap-4">
+      {selectedBooking && (
+        <>
+          <div className="space-y-1">
+            <p className="text-xs text-gray-500">Front</p>
+            <img src={`data:image/png;base64,${selectedBooking.frontImageUrl}`} alt="Front" className="border-4 h-32 w-full object-cover" />
           </div>
-        </div>
-      </div>
+          <div className="space-y-1">
+            <p className="text-xs text-gray-500">Left</p>
+            <img src={`data:image/png;base64,${selectedBooking.leftImageUrl}`} alt="Left" className="border-4 h-32 w-full object-cover" />
+          </div>
+          <div className="space-y-1">
+            <p className="text-xs text-gray-500">Right</p>
+            <img src={`data:image/png;base64,${selectedBooking.rightImageUrl}`} alt="Right" className="border-4 h-32 w-full object-cover" />
+          </div>
+          <div className="space-y-1">
+            <p className="text-xs text-gray-500">Back</p>
+            <img src={`data:image/png;base64,${selectedBooking.backImageUrl}`} alt="Back" className="border-4 h-32 w-full object-cover" />
+          </div>
+        </>
+      )}
+    </div>
+  </div>
+
+  <div>
+    <h4 className="text-lg font-semibold mb-4 text-indigo-900 border-b pb-2">After Trip Images</h4>
+    <div className="grid grid-cols-2 gap-4">
+      {selectedBooking && (
+        <>
+          <div className="space-y-1">
+            <p className="text-xs text-gray-500">Front</p>
+            <img src={`data:image/png;base64,${selectedBooking.frontEndImageUrl}`} alt="Front" className="border-4 h-32 w-full object-cover" />
+          </div>
+          <div className="space-y-1">
+            <p className="text-xs text-gray-500">Left</p>
+            <img src={`data:image/png;base64,${selectedBooking.leftEndImageUrl}`} alt="Left" className="border-4 h-32 w-full object-cover" />
+          </div>
+          <div className="space-y-1">
+            <p className="text-xs text-gray-500">Right</p>
+            <img src={`data:image/png;base64,${selectedBooking.rightEndImageUrl}`} alt="Right" className="border-4 h-32 w-full object-cover" />
+          </div>
+          <div className="space-y-1">
+            <p className="text-xs text-gray-500">Back</p>
+            <img src={`data:image/png;base64,${selectedBooking.backEndImageUrl}`} alt="Back" className="border-4 h-32 w-full object-cover" />
+          </div>
+        </>
+      )}
+    </div>
+  </div>
+</div>
+
+
+      
+
+
     </div>
   );
 };
@@ -765,8 +707,8 @@ const AllBookingsList = ({
   totalPages,
   filteredData,
   handleView,
-  indexOfFirstItem, // Receive indexOfFirstItem as a prop
-  indexOfLastItem // Receive indexOfLastItem as a prop
+  indexOfFirstItem,
+  indexOfLastItem
 }) => {
   return (
     <div className="bg-white p-6 rounded-lg shadow-lg">
