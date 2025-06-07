@@ -119,8 +119,8 @@ const Sidebar = () => {
     },
     { id: 5, name: "Master Records", icon: IoLayersOutline,
       submenu: [
-        { id: 51, path: "/dashboard/masterRecords/allCategories", name: "All Categories" },
         { id: 52, path: "/dashboard/masterRecords/allBrands", name: "All Brands" },
+        { id: 51, path: "/dashboard/masterRecords/allCategories", name: "All Categories" },
         { id: 53, path: "/dashboard/masterRecords/allModels", name: "All Models" },
       ],
     },

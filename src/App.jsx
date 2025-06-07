@@ -16,16 +16,19 @@ import BookingReport from "./pages/AllReport/BookingReport";
 import GstReport from "./pages/AllReport/GstReport";
 import SalesReport from "./pages/AllReport/SalesReport";
 import Login from "./pages/AdminLogin";
+import BookingDetails from "./subpages/BookingDetails";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Login />}></Route>
+
         <Route path="/dashboard" element={<Layout />}>
           <Route index element={<Home />}></Route>
           <Route path="allBikes" element={<Bikes />}></Route>
           <Route path="allBookings" element={<AllBookings />}></Route>
+          <Route path="allBookings/:bookingId" element={<BookingDetails />} />  
           <Route path="storeMaster" element={<StoreMaster />}></Route>
           <Route path="allUsers" element={<AllUsers />}></Route>
           <Route path="allOffers" element={<AllOffers />}></Route>

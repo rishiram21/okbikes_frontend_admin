@@ -278,7 +278,7 @@ const PickUpTariffPlan = () => {
                 <tr>
                   <th scope="col" className="px-6 py-3">ID</th>
                   <th scope="col" className="px-6 py-3">Vehicle Category Name</th>
-                  <th scope="col" className="px-6 py-3">Hours</th>
+                  {/* <th scope="col" className="px-6 py-3">Hours</th> */}
                   <th scope="col" className="px-6 py-3">Days</th>
                   <th scope="col" className="px-6 py-3">Price</th>
                   <th scope="col" className="px-6 py-3">Deposit</th>
@@ -309,7 +309,7 @@ const PickUpTariffPlan = () => {
                     >
                       <td className="px-6 py-4 font-medium">{pickuptariffplan.id}</td>
                       <td className="px-6 py-4">{pickuptariffplan?.vehicleCategory}</td>
-                      <td className="px-6 py-4">{pickuptariffplan?.hours}</td>
+                      {/* <td className="px-6 py-4">{pickuptariffplan?.hours}</td> */}
                       <td className="px-6 py-4">{pickuptariffplan?.days}</td>
                       <td className="px-6 py-4">{pickuptariffplan?.price}</td>
                       <td className="px-6 py-4">{pickuptariffplan?.deposit}</td>
