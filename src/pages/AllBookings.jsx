@@ -143,7 +143,7 @@ const AllBookingsList = ({
           <thead className="text-xs uppercase bg-indigo-900 text-white">
             <tr>
               <th scope="col" className="px-6 py-3">No.</th>
-              <th scope="col" className="px-6 py-3">Booking ID</th>
+              {/* <th scope="col" className="px-6 py-3">Booking ID</th> */}
               <th scope="col" className="px-6 py-3">User Name</th>
               <th scope="col" className="px-6 py-3">Vehicle</th>
               <th scope="col" className="px-6 py-3">Start Date</th>
@@ -167,7 +167,7 @@ const AllBookingsList = ({
               currentData.map((item, index) => (
                 <tr key={item.bookingId} className={`border-b hover:bg-indigo-50 transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
                   <td className="px-6 py-4 font-medium">{indexOfFirstItem + index + 1}</td>
-                  <td className="px-6 py-4">{item.bookingId}</td>
+                  {/* <td className="px-6 py-4">{item.bookingId}</td> */}
                   <td className="px-6 py-4">{item.userName}</td>
                   <td className="px-6 py-4">{item.vehicle.model}</td>
                   <td className="px-6 py-4 whitespace-nowrap">

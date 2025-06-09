@@ -174,7 +174,7 @@ const AllRegisterCustomers = () => {
     <div className="bg-gray-100 min-h-screen">
       <ToastContainer />
       {viewMode ? (
-        <div className="bg-white p-6 rounded-lg shadow-lg">
+        <div className="bg-white p-6 rounded-lg shadow-lg mt-8">
           <div className="flex justify-between items-center mb-6">
             <h3 className="text-lg font-bold md:text-xl">User Details</h3>
             <VerificationStatusCard />

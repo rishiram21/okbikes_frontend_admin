@@ -136,17 +136,7 @@ const PickUpTariffPlan = () => {
 
   return (
     <div className="bg-gray-100 min-h-screen">
-      <div className="flex justify-between items-center mt-4 mb-4">
-        <h1 className="text-2xl font-bold text-gray-800">All Price List</h1>
-        {!formVisible && (
-          <button
-            onClick={() => setFormVisible(true)}
-            className="px-4 py-2 bg-indigo-900 text-white rounded hover:bg-indigo-600"
-          >
-            + Add Price
-          </button>
-        )}
-      </div>
+      
 
       {formVisible ? (
         <div className="bg-white p-6 rounded-lg shadow-lg">
@@ -261,9 +251,20 @@ const PickUpTariffPlan = () => {
           </form>
         </div>
       ) : (
-        <div className="bg-white p-6 rounded-lg shadow-lg">
+        <div className="bg-white p-6 rounded-lg shadow-lg mt-8">
           <div className="flex justify-between items-center mb-6">
             <h3 className="text-xl font-bold text-indigo-900">All Price List</h3>
+            {/* <div className="flex justify-between items-center mt-4 mb-4"> */}
+        {/* <h1 className="text-2xl font-bold text-gray-800">All Price List</h1> */}
+        {!formVisible && (
+          <button
+            onClick={() => setFormVisible(true)}
+            className="px-4 py-2 bg-indigo-900 text-white rounded hover:bg-indigo-600"
+          >
+            + Add Price
+          </button>
+        )}
+      {/* </div> */}
             <input
               type="text"
               placeholder="Search By Vehicle Category..."

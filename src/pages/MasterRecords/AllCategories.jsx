@@ -103,9 +103,9 @@ const AllCategories = () => {
   return (
     <div className="bg-gray-100 min-h-screen">
       <div className="flex justify-between items-center mt-4 mb-4">
-        <h1 className="text-xl font-bold text-gray-800 md:text-2xl">
+        {/* <h1 className="text-xl font-bold text-gray-800 md:text-2xl">
           All Categories
-        </h1>
+        </h1> */}
       </div>
 
       {formVisible ? (
