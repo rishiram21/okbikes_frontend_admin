@@ -125,7 +125,8 @@ const Sidebar = () => {
       ],
     },
     // { id: 6, path: "/dashboard/allOffers", name: "All Offers", icon: IoPricetagsOutline },
-    { id: 9, path: "/dashboard/allRegisterCustomers", name: "All Registered Customers", icon: LuUsers2 },
+    // { id: 9, path: "/dashboard/storeManager", name: "Store Manager ", icon: LuUsers2 },
+    { id: 10, path: "/dashboard/allRegisterCustomers", name: "All Registered Customers", icon: LuUsers2 },
     // { id: 10, name: "All Reports", icon: TbReportSearch,
     //   submenu: [
     //     { id: 101, path: "/dashboard/allReport/bookingReport", name: "Booking Report" },

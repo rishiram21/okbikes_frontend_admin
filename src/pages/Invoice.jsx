@@ -1,6 +1,9 @@
 import React from "react";
 
+
+
 const Invoice = ({
+  user,
   booking,
   charges,
   lateCharges = 0,
@@ -17,6 +20,8 @@ const Invoice = ({
       (diffTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
     );
     const diffMinutes = Math.floor((diffTime % (1000 * 60 * 60)) / (1000 * 60));
+
+console.log(booking);
 
     let durationText = "";
     if (diffDays > 0)
@@ -37,8 +42,7 @@ const Invoice = ({
 
   // Corrected calculations - package price is already total for duration
   const packagePrice = booking.vehiclePackage.price || 0;
-  const deliveryCharge =
-    booking.addressType === "DELIVERY_AT_LOCATION" ? 250 : 0;
+  const deliveryCharge = booking.addressType === "DELIVERY_AT_LOCATION" ? 250 : 0;
   const gst = packagePrice * 0.18;
   const convenienceFee = 2.0;
 
