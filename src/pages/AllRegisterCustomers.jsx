@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { FaEye, FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 import apiClient from "../api/apiConfig";
-import { motion } from "framer-motion";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -10,7 +9,7 @@ const AllRegisterCustomers = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
-  const [itemsPerPage] = useState(10);
+  const [itemsPerPage] = useState(5);
   const [totalPages, setTotalPages] = useState(1);
   const [selectedUser, setSelectedUser] = useState(null);
   const [viewMode, setViewMode] = useState(false);
@@ -50,7 +49,8 @@ const AllRegisterCustomers = () => {
         });
 
         // Remove the first user record
-        const filteredData = response.data.content.slice(1);
+        //new changes
+        const filteredData = response.data.content;
 
         setData(filteredData);
         setTotalPages(response.data.totalPages);
@@ -63,6 +63,7 @@ const AllRegisterCustomers = () => {
     fetchUsers();
   }, [currentPage, itemsPerPage]);
 
+  
   const filteredData = data.filter(
     (item) =>
       item.name && item.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -70,7 +71,7 @@ const AllRegisterCustomers = () => {
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentData = filteredData.slice(indexOfFirstItem, indexOfLastItem);
+  const currentData = filteredData
 
   const handleView = (user) => {
     setSelectedUser(user);
