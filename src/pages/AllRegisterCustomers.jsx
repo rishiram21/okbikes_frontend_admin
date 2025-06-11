@@ -43,8 +43,12 @@ const AllRegisterCustomers = () => {
       try {
         const response = await apiClient.get("/users/all", {
           params: {
+            query: searchQuery,
             page: currentPage - 1,
             size: itemsPerPage,
+            sortBy: 'createdAt',
+            sortDirection: 'DESC', // Sort by creation date in descending order
+            role: 'USER',
           },
         });
 

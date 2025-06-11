@@ -71,6 +71,8 @@ const BookingDetailPage = () => {
         vehiclePackage: response.data.vehiclePackage,
         additionalCharges: response.data.booking.additionalCharges,
         vehicleNumber: response.data.vehicle.vehicleRegistrationNumber,
+        userName: response.data.user.name,
+        userPhone: response.data.user.phoneNumber
       };
 
       setSelectedBooking(bookingData);
@@ -608,59 +610,59 @@ const BookingDetails = ({
 
       <div className="my-8 h-px bg-gray-300"></div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
-        <div>
-          <h4 className="text-lg font-semibold mb-4 text-indigo-900 border-b pb-2">Before Trip Images</h4>
-          <div className="grid grid-cols-2 gap-4">
-            {selectedBooking && (
-              <>
-                <div className="space-y-1">
-                  <p className="text-xs text-gray-500">Front</p>
-                  <img src={`${import.meta.env.VITE_BASE_URL}/uploads/bookings/${selectedBooking.bookingId}/front.jpg`} alt="Front" className='border-4' />
-                </div>
-                <div className="space-y-1">
-                  <p className="text-xs text-gray-500">Left</p>
-                  <img src={`${import.meta.env.VITE_BASE_URL}/uploads/bookings/${selectedBooking.bookingId}/left.jpg`} alt="Left" className='border-4' />
-                </div>
-                <div className="space-y-1">
-                  <p className="text-xs text-gray-500">Right</p>
-                  <img src={`${import.meta.env.VITE_BASE_URL}/uploads/bookings/${selectedBooking.bookingId}/right.jpg`} alt="Right" className='border-4' />
-                </div>
-                <div className="space-y-1">
-                  <p className="text-xs text-gray-500">Back</p>
-                  <img src={`${import.meta.env.VITE_BASE_URL}/uploads/bookings/${selectedBooking.bookingId}/back.jpg`} alt="Back" className='border-4' />
-                </div>
-              </>
-            )}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+       <div>
+    <h4 className="text-lg font-semibold mb-4 text-indigo-900 border-b pb-2">Before Trip Images</h4>
+    <div className="grid grid-cols-2 gap-4">
+      {selectedBooking && (
+        <>
+          <div className="space-y-1">
+            <p className="text-xs text-gray-500">Front</p>
+            <img src={`data:image/png;base64,${selectedBooking.frontImageUrl}`} alt="Front" className="border-4 h-32 w-full object-cover" />
           </div>
-        </div>
+          <div className="space-y-1">
+            <p className="text-xs text-gray-500">Left</p>
+            <img src={`data:image/png;base64,${selectedBooking.leftImageUrl}`} alt="Left" className="border-4 h-32 w-full object-cover" />
+          </div>
+          <div className="space-y-1">
+            <p className="text-xs text-gray-500">Right</p>
+            <img src={`data:image/png;base64,${selectedBooking.rightImageUrl}`} alt="Right" className="border-4 h-32 w-full object-cover" />
+          </div>
+          <div className="space-y-1">
+            <p className="text-xs text-gray-500">Back</p>
+            <img src={`data:image/png;base64,${selectedBooking.backImageUrl}`} alt="Back" className="border-4 h-32 w-full object-cover" />
+          </div>
+        </>
+      )}
+    </div>
+     </div>
 
-        <div>
-          <h4 className="text-lg font-semibold mb-4 text-indigo-900 border-b pb-2">After Trip Images</h4>
-          <div className="grid grid-cols-2 gap-4">
-            {selectedBooking && (
-              <>
-                <div className="space-y-1">
-                  <p className="text-xs text-gray-500">Front</p>
-                  <img src={`${import.meta.env.VITE_BASE_URL}/uploads/bookings/${selectedBooking.bookingId}/end/front_end.jpg`} alt="Front" className='border-4' />
-                </div>
-                <div className="space-y-1">
-                  <p className="text-xs text-gray-500">Left</p>
-                  <img src={`${import.meta.env.VITE_BASE_URL}/uploads/bookings/${selectedBooking.bookingId}/end/left_end.jpg`} alt="Left" className='border-4' />
-                </div>
-                <div className="space-y-1">
-                  <p className="text-xs text-gray-500">Right</p>
-                  <img src={`${import.meta.env.VITE_BASE_URL}/uploads/bookings/${selectedBooking.bookingId}/end/right_end.jpg`} alt="Right" className='border-4' />
-                </div>
-                <div className="space-y-1">
-                  <p className="text-xs text-gray-500">Back</p>
-                  <img src={`${import.meta.env.VITE_BASE_URL}/uploads/bookings/${selectedBooking.bookingId}/end/back_end.jpg`} alt="Back" className='border-4' />
-                </div>
-              </>
-            )}
+  <div>
+    <h4 className="text-lg font-semibold mb-4 text-indigo-900 border-b pb-2">After Trip Images</h4>
+    <div className="grid grid-cols-2 gap-4">
+      {selectedBooking && (
+        <>
+          <div className="space-y-1">
+            <p className="text-xs text-gray-500">Front</p>
+            <img src={`data:image/png;base64,${selectedBooking.frontEndImageUrl}`} alt="Front" className="border-4 h-32 w-full object-cover" />
           </div>
-        </div>
-      </div>
+          <div className="space-y-1">
+            <p className="text-xs text-gray-500">Left</p>
+            <img src={`data:image/png;base64,${selectedBooking.leftEndImageUrl}`} alt="Left" className="border-4 h-32 w-full object-cover" />
+          </div>
+          <div className="space-y-1">
+            <p className="text-xs text-gray-500">Right</p>
+            <img src={`data:image/png;base64,${selectedBooking.rightEndImageUrl}`} alt="Right" className="border-4 h-32 w-full object-cover" />
+          </div>
+          <div className="space-y-1">
+            <p className="text-xs text-gray-500">Back</p>
+            <img src={`data:image/png;base64,${selectedBooking.backEndImageUrl}`} alt="Back" className="border-4 h-32 w-full object-cover" />
+          </div>
+        </>
+      )}
+    </div>
+  </div>
+</div>
     </div>
   );
 };

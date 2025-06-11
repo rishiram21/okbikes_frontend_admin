@@ -1,38 +1,34 @@
 import React from "react";
 
-
-
 const Invoice = ({
-  user,
   booking,
   charges,
   lateCharges = 0,
   challans = [],
   damages = [],
 }) => {
-  const calculateDuration = () => {
-    const start = new Date(booking.startDate);
-    const end = new Date(booking.endDate);
-    const diffTime = Math.abs(end - start);
+  // const calculateDuration = () => {
+  //   const start = new Date(booking.startDate);
+  //   const end = new Date(booking.endDate);
+  //   const diffTime = Math.abs(end - start);
 
-    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-    const diffHours = Math.floor(
-      (diffTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-    );
-    const diffMinutes = Math.floor((diffTime % (1000 * 60 * 60)) / (1000 * 60));
+  //   const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+  //   const diffHours = Math.floor(
+  //     (diffTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+  //   );
+  //   const diffMinutes = Math.floor((diffTime % (1000 * 60 * 60)) / (1000 * 60));
 
-console.log(booking);
 
-    let durationText = "";
-    if (diffDays > 0)
-      durationText += `${diffDays} day${diffDays !== 1 ? "s" : ""} `;
-    if (diffHours > 0 || diffDays > 0)
-      durationText += `${diffHours} hour${diffHours !== 1 ? "s" : ""} `;
-    if (diffMinutes > 0 || diffHours > 0 || diffDays > 0)
-      durationText += `${diffMinutes} minute${diffMinutes !== 1 ? "s" : ""}`;
+  //   let durationText = "";
+  //   if (diffDays > 0)
+  //     durationText += `${diffDays} day${diffDays !== 1 ? "s" : ""} `;
+  //   if (diffHours > 0 || diffDays > 0)
+  //     durationText += `${diffHours} hour${diffHours !== 1 ? "s" : ""} `;
+  //   if (diffMinutes > 0 || diffHours > 0 || diffDays > 0)
+  //     durationText += `${diffMinutes} minute${diffMinutes !== 1 ? "s" : ""}`;
 
-    return durationText.trim();
-  };
+  //   return durationText.trim();
+  // };
 
   const today = new Date().toLocaleDateString("en-US", {
     month: "short",
@@ -40,55 +36,151 @@ console.log(booking);
     year: "numeric",
   });
 
-  // Corrected calculations - package price is already total for duration
-  const packagePrice = booking.vehiclePackage.price || 0;
-  const deliveryCharge = booking.addressType === "DELIVERY_AT_LOCATION" ? 250 : 0;
-  const gst = packagePrice * 0.18;
-  const convenienceFee = 2.0;
+  const calculateDuration = () => {
+  const start = new Date(booking.startDate);
+  const end = new Date(booking.endDate);
+  const diffTime = Math.abs(end - start);
 
-  // Calculate subtotal and total
-  const subtotal = packagePrice + gst + convenienceFee + deliveryCharge;
-  const additionalChargesTotal = charges.reduce(
-    (sum, charge) => sum + Number(charge.amount),
-    0
-  );
-  const challansTotal = challans.reduce(
-    (sum, challan) => sum + Number(challan.amount),
-    0
-  );
-  const damagesTotal = damages.reduce(
-    (sum, damage) => sum + Number(damage.amount),
-    0
-  );
-  const totalAmount =
-    subtotal +
-    additionalChargesTotal +
-    lateCharges +
-    challansTotal +
-    damagesTotal;
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+  const diffHours = Math.floor((diffTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const diffMinutes = Math.floor((diffTime % (1000 * 60 * 60)) / (1000 * 60));
+
+  let durationText = "";
+  if (diffDays > 0) durationText += `${diffDays} day${diffDays !== 1 ? "s" : ""} `;
+  if (diffHours > 0 || diffDays > 0)
+    durationText += `${diffHours} hour${diffHours !== 1 ? "s" : ""} `;
+  if (diffMinutes > 0 || diffHours > 0 || diffDays > 0)
+    durationText += `${diffMinutes} minute${diffMinutes !== 1 ? "s" : ""}`;
+
+  return durationText.trim();
+};
+
+// Calculate duration
+const durationText = calculateDuration();
+
+// Corrected calculations - package price is multiplied by duration
+const packagePrice = booking.vehiclePackage.price || 0;
+const durationDays = Math.floor(Math.abs(new Date(booking.endDate) - new Date(booking.startDate)) / (1000 * 60 * 60 * 24));
+const deliveryCharge = booking.addressType === "DELIVERY_AT_LOCATION" ? 250 : 0;
+const gst = (packagePrice * durationDays) * 0.18; // GST is calculated on the total package price
+const convenienceFee = 2.0;
+
+// Calculate subtotal and total
+const subtotal = (packagePrice * durationDays) + gst + convenienceFee + deliveryCharge;
+const additionalChargesTotal = charges.reduce(
+  (sum, charge) => sum + Number(charge.amount),
+  0
+);
+const challansTotal = challans.reduce(
+  (sum, challan) => sum + Number(challan.amount),
+  0
+);
+const damagesTotal = damages.reduce(
+  (sum, damage) => sum + Number(damage.amount),
+  0
+);
+const totalAmount =
+  subtotal +
+  additionalChargesTotal +
+  lateCharges +
+  challansTotal +
+  damagesTotal;
+
+  // Custom print function that hides everything except the invoice
+  const handlePrint = () => {
+    // Hide all body content
+    document.body.style.visibility = 'hidden';
+    
+    // Show only the invoice container
+    const invoiceElement = document.getElementById('invoice-container');
+    if (invoiceElement) {
+      invoiceElement.style.visibility = 'visible';
+      invoiceElement.style.position = 'absolute';
+      invoiceElement.style.left = '0';
+      invoiceElement.style.top = '0';
+      invoiceElement.style.width = '100%';
+    }
+    
+    // Print
+    window.print();
+    
+    // Restore visibility after printing
+    setTimeout(() => {
+      document.body.style.visibility = 'visible';
+      if (invoiceElement) {
+        invoiceElement.style.position = '';
+        invoiceElement.style.left = '';
+        invoiceElement.style.top = '';
+        invoiceElement.style.width = '';
+      }
+    }, 1000);
+  };
 
   return (
-    <div className="bg-white rounded-lg shadow-xl border border-gray-200 max-w-3xl mx-auto print:shadow-none">
+    <div 
+      id="invoice-container"
+      className="bg-white rounded-lg shadow-xl border border-gray-200 max-w-3xl mx-auto print:shadow-none print:border-none print:rounded-none print:max-w-none print:mx-0"
+    >
+      {/* Add print-specific styles */}
+      <style jsx>{`
+        @media print {
+          @page {
+            margin: 0.5in;
+            size: A4;
+          }
+          
+          body {
+            -webkit-print-color-adjust: exact;
+            color-adjust: exact;
+          }
+          
+          /* Hide everything except the invoice */
+          body * {
+            visibility: hidden;
+          }
+          
+          #invoice-container,
+          #invoice-container * {
+            visibility: visible;
+          }
+          
+          #invoice-container {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100% !important;
+            max-width: none !important;
+            margin: 0 !important;
+            box-shadow: none !important;
+            border: none !important;
+            border-radius: 0 !important;
+          }
+        }
+      `}</style>
+
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-900 to-blue-800 text-white p-8 rounded-t-lg flex justify-between items-center">
+      <div className="bg-gradient-to-r from-blue-900 to-blue-800 text-white p-8 rounded-t-lg flex justify-between items-center print:rounded-none">
         <div className="flex items-center space-x-4">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">OkBikes</h1>
-            <p className="text-blue-100">Ride with confidence</p>
-          </div>
+          <div className="flex items-center space-x-2">
+              <img src="/okloggo.png" alt="okbike Logo" className="h-10 w-20" />
+              <div>
+                <h1 className="text-xl font-bold tracking-tight">OkBikes</h1>
+                <p className="text-orange-100 text-xs">Ride with confidence</p>
+              </div>
+            </div>
         </div>
         <div className="text-right">
-          <h2 className="text-2xl font-bold tracking-wide uppercase">
+          <h2 className="text-xl font-bold tracking-wide uppercase">
             Invoice
           </h2>
-          <div className="bg-blue-700 px-3 py-1 rounded mt-1 inline-block">
+          <div className="bg-blue-700 px-3 rounded inline-block">
             <p className="text-blue-100">OKB-{booking.bookingId}</p>
           </div>
         </div>
       </div>
 
       {/* Status Bar */}
-      <div className="bg-blue-50 px-8 py-3 border-b border-blue-100 flex justify-between items-center">
+      <div className="bg-blue-50 px-8 border-b border-blue-100 flex justify-between items-center">
         <div className="text-gray-600">
           <span>Invoice Date: </span>
           <span className="font-medium">{today}</span>
@@ -98,12 +190,12 @@ console.log(booking);
       {/* Body */}
       <div className="p-8">
         {/* Address and Date Section */}
-        <div className="flex justify-between mb-8">
+        <div className="flex justify-between mb-2">
           <div className="bg-gray-50 rounded-lg p-4 border-l-4 border-blue-800 w-5/12">
-            <h3 className="font-bold text-gray-700 mb-2 text-sm uppercase tracking-wider">
+            <h3 className="font-bold text-gray-700 text-sm uppercase tracking-wider">
               Billed To:
             </h3>
-            <p className="text-gray-800 font-medium text-lg">
+            <p className="text-gray-800 font-medium text-s">
               {booking.userName}
             </p>
             <p className="text-gray-600">
@@ -111,7 +203,7 @@ console.log(booking);
             </p>
           </div>
           <div className="bg-gray-50 rounded-lg p-4 border-l-4 border-blue-800 w-5/12">
-            <h3 className="font-bold text-gray-700 mb-2 text-sm uppercase tracking-wider">
+            <h3 className="font-bold text-gray-700 text-sm uppercase tracking-wider">
               Payment Details:
             </h3>
             <p className="text-gray-600">
@@ -130,8 +222,8 @@ console.log(booking);
         </div>
 
         {/* Booking Details */}
-        <div className="mb-8">
-          <h3 className="text-xl font-semibold text-blue-900 pb-2 mb-4 flex items-center">
+        <div className="mb-2">
+          <h3 className="text-m font-semibold text-blue-900 flex items-center">
             <svg
               className="w-5 h-5 mr-2"
               fill="none"
@@ -151,19 +243,19 @@ console.log(booking);
           <div className="bg-gray-50 p-6 rounded-lg border border-gray-200">
             <div className="grid grid-cols-2 gap-6">
               <div>
-                <p className="text-gray-500 text-sm mb-1">Vehicle Model</p>
+                <p className="text-gray-500 text-xs">Vehicle Model</p>
                 <p className="font-medium text-gray-900 text-lg">
                   {booking.vehicle.model}
                 </p>
               </div>
               <div>
-                <p className="text-gray-500 text-sm mb-1">Vehicle Number</p>
+                <p className="text-gray-500 text-xs">Vehicle Number</p>
                 <p className="font-medium text-gray-900 text-lg">
                   {booking.vehicleNumber || "Not assigned"}
                 </p>
               </div>
               <div>
-                <p className="text-gray-500 text-sm mb-1">Start Date & Time</p>
+                <p className="text-gray-500 text-xs">Start Date & Time</p>
                 <p className="font-medium text-gray-900">
                   {new Date(booking.startDate).toLocaleString("en-US", {
                     month: "short",
@@ -176,7 +268,7 @@ console.log(booking);
                 </p>
               </div>
               <div>
-                <p className="text-gray-500 text-sm mb-1">End Date & Time</p>
+                <p className="text-gray-500 text-xs">End Date & Time</p>
                 <p className="font-medium text-gray-900">
                   {new Date(booking.endDate).toLocaleString("en-US", {
                     month: "short",
@@ -189,13 +281,13 @@ console.log(booking);
                 </p>
               </div>
               <div>
-                <p className="text-gray-500 text-sm mb-1">Duration</p>
+                <p className="text-gray-500 text-xs">Duration</p>
                 <p className="font-medium text-gray-900">
                   {calculateDuration()}
                 </p>
               </div>
               <div>
-                <p className="text-gray-500 text-sm mb-1">Package</p>
+                <p className="text-gray-500 text-xs">Package</p>
                 <p className="font-medium text-gray-900">
                   {booking.vehiclePackage.name || "Standard Package"}
                 </p>
@@ -205,8 +297,8 @@ console.log(booking);
         </div>
 
         {/* Charges Breakdown */}
-        <div className="mb-8">
-          <h3 className="text-xl font-semibold text-blue-900 pb-2 mb-4 flex items-center">
+        <div className="mb-2">
+          <h3 className="text-m font-semibold text-blue-900 flex items-center">
             <svg
               className="w-5 h-5 mr-2"
               fill="none"
@@ -227,40 +319,40 @@ console.log(booking);
             <table className="w-full">
               <thead className="bg-gray-50 border-b-2 border-gray-200">
                 <tr>
-                  <th className="text-left py-3 px-4 text-gray-700 font-semibold">
+                  <th className="text-left px-4 text-gray-700 font-semibold">
                     Description
                   </th>
-                  <th className="text-right py-3 px-4 text-gray-700 font-semibold">
+                  <th className="text-right py-1 px-4 text-gray-700 font-semibold">
                     Amount
                   </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
                 <tr>
-                  <td className="py-3 px-4 text-gray-700">Package Price</td>
-                  <td className="py-3 px-4 text-gray-700 text-right">
-                    ₹{packagePrice.toFixed(2)}
-                  </td>
-                </tr>
+          <td className="px-4 text-gray-700">Package Price (Duration: {durationText})</td>
+          <td className="py-1 px-4 text-gray-700 text-right">
+            ₹{(packagePrice * durationDays).toFixed(2)}
+          </td>
+        </tr>
 
                 <tr>
-                  <td className="py-3 px-4 text-gray-700">GST (18%)</td>
-                  <td className="py-3 px-4 text-gray-700 text-right">
+                  <td className="px-4 text-gray-700">GST (18%)</td>
+                  <td className="py-1 px-4 text-gray-700 text-right">
                     ₹{gst.toFixed(2)}
                   </td>
                 </tr>
                 <tr>
-                  <td className="py-3 px-4 text-gray-700">Convenience Fee</td>
-                  <td className="py-3 px-4 text-gray-700 text-right">
+                  <td className="px-4 text-gray-700">Convenience Fee</td>
+                  <td className="py-1 px-4 text-gray-700 text-right">
                     ₹{convenienceFee.toFixed(2)}
                   </td>
                 </tr>
                 {booking.addressType === "DELIVERY_AT_LOCATION" && (
                   <tr className="bg-blue-50">
-                    <td className="py-3 px-4 text-blue-700 font-medium">
+                    <td className="px-4 text-blue-700 font-medium">
                       Delivery Charge
                     </td>
-                    <td className="py-3 px-4 text-blue-700 font-medium text-right">
+                    <td className="py-1 px-4 text-blue-700 font-medium text-right">
                       ₹{deliveryCharge.toFixed(2)}
                     </td>
                   </tr>
@@ -268,16 +360,16 @@ console.log(booking);
               </tbody>
               <tfoot className="bg-blue-50">
                 <tr className="border-t-2 border-blue-200">
-                  <td className="py-4 px-4 text-lg font-bold text-blue-900">
+                  <td className="px-4 text-lg font-bold text-blue-900">
                     Total Amount
                   </td>
-                  <td className="py-4 px-4 text-2xl font-bold text-blue-900 text-right">
+                  <td className="py-2 px-4 text-2xl font-bold text-blue-900 text-right">
                     ₹{totalAmount.toFixed(2)}
                   </td>
                 </tr>
               </tfoot>
             </table>
-            <div className="px-4 py-2 bg-gray-50">
+            <div className="px-4 bg-gray-50">
               <p className="font-semibold text-red-600 text-sm">
                 * Note: Deposit is not included in Total Amount
               </p>
@@ -286,7 +378,7 @@ console.log(booking);
         </div>
 
         {/* Terms and Conditions */}
-        <div className="mb-8 text-sm text-gray-600 border-t border-gray-200 pt-6">
+        {/* <div className="mb-8 text-sm text-gray-600 border-t border-gray-200 pt-6">
           <h4 className="font-semibold text-gray-700 mb-3 flex items-center">
             <svg
               className="w-4 h-4 mr-2"
@@ -326,12 +418,12 @@ console.log(booking);
               </li>
             )}
           </ul>
-        </div>
+        </div> */}
 
         {/* Footer */}
-        <div className="text-center text-sm text-gray-600 mt-8 border-t border-gray-200 pt-6">
+        <div className="text-center text-sm text-gray-600 border-t border-gray-200 pt-6">
           <p className="font-medium">Thank you for choosing OkBikes!</p>
-          <div className="flex justify-center items-center mt-2 space-x-4">
+          <div className="flex justify-center items-center space-x-4">
             <div className="flex items-center">
               <svg
                 className="w-4 h-4 mr-1 text-gray-500"
@@ -373,7 +465,7 @@ console.log(booking);
         <div className="flex justify-end">
           <button
             className="px-6 py-2.5 bg-blue-800 text-white rounded-md hover:bg-blue-700 transition duration-300 flex items-center justify-center shadow-md"
-            onClick={() => window.print()}
+            onClick={handlePrint}
           >
             <svg
               className="w-4 h-4 mr-2"
