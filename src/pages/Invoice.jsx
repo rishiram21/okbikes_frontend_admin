@@ -164,7 +164,7 @@ const totalAmount =
           <div className="flex items-center space-x-2">
               <img src="/okloggo.png" alt="okbike Logo" className="h-10 w-20" />
               <div>
-                <h1 className="text-xl font-bold tracking-tight">OkBikes</h1>
+                <h1 className="text-xl font-bold tracking-tight">OkBike</h1>
                 <p className="text-orange-100 text-xs">Ride with confidence</p>
               </div>
             </div>
@@ -357,6 +357,18 @@ const totalAmount =
                     </td>
                   </tr>
                 )}
+                {charges
+                  .filter((charge) => charge.type === "Additional")
+                  .map((charge, index) => (
+                    <tr key={index}>
+                      <td className="px-4 text-gray-700 font-medium">
+                        {charge.type}
+                      </td>
+                      <td className="py-1 px-4 text-gray-700 text-right font-medium">
+                        ₹{charge.amount.toFixed(2)}
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
               <tfoot className="bg-blue-50">
                 <tr className="border-t-2 border-blue-200">
@@ -422,7 +434,7 @@ const totalAmount =
 
         {/* Footer */}
         <div className="text-center text-sm text-gray-600 border-t border-gray-200 pt-6">
-          <p className="font-medium">Thank you for choosing OkBikes!</p>
+          <p className="font-medium">Thank you for choosing OkBike!</p>
           <div className="flex justify-center items-center space-x-4">
             <div className="flex items-center">
               <svg

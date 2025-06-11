@@ -159,7 +159,7 @@ const Sidebar = () => {
             </div>
           </button>
           <h1 className="text-white font-bold text-lg">
-            OKBIKES
+            OKBIKE
           </h1>
         </div>
 

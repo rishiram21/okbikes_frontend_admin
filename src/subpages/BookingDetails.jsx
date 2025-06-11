@@ -548,7 +548,7 @@ const BookingDetails = ({
               </div>
             ))}
 
-            {chargesEditable && (
+            {/* {chargesEditable && (
               <button
                 type="button"
                 onClick={handleAddCharge}
@@ -556,7 +556,7 @@ const BookingDetails = ({
               >
                 <Plus size={16} className="mr-2" /> Add Charge
               </button>
-            )}
+            )} */}
 
             {chargesEditable && (
               <button
